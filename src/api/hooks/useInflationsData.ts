@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { json } from "d3";
 import { InflationsData } from "../../features/Inflations/types/data";
 
-const url = "%PUBLIC_URL%/data/inflations.json";
+const url = "public/data/inflations.json";
 
 function fetcher() {
     return json<InflationsData>(url);
