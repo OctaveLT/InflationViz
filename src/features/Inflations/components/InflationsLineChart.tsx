@@ -1,4 +1,4 @@
-import { scaleLinear, scaleTime } from "d3";
+import { scaleLinear, scaleTime } from "./d3";
 import { useRef, useState } from "react";
 import { XAxisV2 } from "../../../components/viz/Axis/XAxisV2";
 import { Grid } from "../../../components/viz/Lines/Grid";

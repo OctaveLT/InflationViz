@@ -1,4 +1,4 @@
-import { scaleLinear } from "d3";
+import { scaleLinear } from "./d3";
 import { inflationThreshold } from "../constants/domains";
 
 // colors chosen from colorbrewer2.org and schubert-da.github.io/dataviz-palette-tool/

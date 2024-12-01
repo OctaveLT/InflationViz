@@ -1,4 +1,4 @@
-import { GeoPermissibleObjects } from "d3";
+import { GeoPermissibleObjects } from "./d3";
 import { CountryFeature } from "../../components/viz/types";
 
 export type GeoJsonFeature = {

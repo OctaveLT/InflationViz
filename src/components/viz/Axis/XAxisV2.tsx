@@ -1,4 +1,4 @@
-import { AxisDomain, AxisScale, select } from "d3";
+import { AxisDomain, AxisScale, select } from "./d3";
 import { Dimension } from "../../../types/dimensions/types";
 import { toAxisFn } from "./constants";
 import { getAxisConfig } from "./functions/getAxisConfig";

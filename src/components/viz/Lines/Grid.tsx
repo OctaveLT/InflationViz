@@ -1,4 +1,4 @@
-import { scaleLinear } from "d3";
+import { scaleLinear } from "./d3";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Line, LineProps } from "./Line";
 import { Point } from "../../../types/shapes/types";
