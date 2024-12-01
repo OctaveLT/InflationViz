@@ -1,0 +1,25 @@
+export enum Country {
+    AT = "AT",
+    BE = "BE",
+    CY = "CY",
+    DE = "DE",
+    EE = "EE",
+    ES = "ES",
+    FI = "FI",
+    FR = "FR",
+    GR = "GR",
+    HR = "HR",
+    IE = "IE",
+    IT = "IT",
+    LT = "LT",
+    LU = "LU",
+    LV = "LV",
+    MT = "MT",
+    NL = "NL",
+    PT = "PT",
+    SI = "SI",
+    SK = "SK",
+    U2 = "U2",
+}
+
+export const countries = Object.values(Country);
