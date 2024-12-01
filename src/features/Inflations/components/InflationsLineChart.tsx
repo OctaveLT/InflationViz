@@ -130,7 +130,6 @@ export function InflationsLineChart({
                     }}
                 />
                 <XAxisV2
-                    svg={svgRef.current}
                     direction="bottom"
                     scale={xScale}
                     dimension={{
@@ -143,7 +142,6 @@ export function InflationsLineChart({
                     }}
                 />
                 <XAxisV2
-                    svg={svgRef.current}
                     direction="left"
                     scale={yScale}
                     dimension={{

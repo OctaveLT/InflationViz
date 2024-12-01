@@ -5,7 +5,7 @@ import {
     select
 } from "d3";
 import { useEffect, useMemo } from "react";
-import { getMinMax } from "../../../functions/data/getMinMax";s
+import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";
 
