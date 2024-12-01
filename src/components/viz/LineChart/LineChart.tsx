@@ -1,4 +1,4 @@
-import { CurveFactory, easeLinear, line, scaleLinear, select, transition } from "d3";
+import { CurveFactory, line, scaleLinear, select, transition } from "d3";
 import { useEffect, useRef } from "react";
 import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
@@ -49,10 +49,8 @@ export const LineChart = <Data extends Line>({
     const lineGenerator = line<Point>()
         .x((d) => xScale(xAccessor(d)))
         .y((d) => yScale(yAccessor(d)));
-    //.curve(curve)
 
     const slow = () => transition().duration(2000);
-    const fast = transition().duration(500).ease(easeLinear);
 
     useEffect(() => {
         const svg = select(svgRef.current);
@@ -68,44 +66,10 @@ export const LineChart = <Data extends Line>({
         linePath
             .data([data.points])
             .join("path")
-            /* (enter) => {
-                    const enterLinePath = enter
-                        .append("path")
-                        .attr("d", lineGenerator)
-                        .call((selection) => {
-                            const pathLength =
-                                selection.node()?.getTotalLength() ?? 0;
-                            selection
-                                .attr("stroke-dashoffset", pathLength)
-                                .attr("stroke-dasharray", pathLength);
-
-                            selection
-                                .transition(slow())
-                                .attr("stroke-dashoffset", 0);
-                        });
-                    return enterLinePath;
-                },
-                (update) => {
-                    console.log("update");
-                    const enterLinePath = update
-                        .select("path")
-                        .attr("d", lineGenerator)
-                        .call((selection) => {
-                            const pathLength =
-                                selection.node()?.getTotalLength() ?? 0;
-                            selection
-                                .attr("stroke-dashoffset", pathLength)
-                                .attr("stroke-dasharray", pathLength);
-
-                            selection
-                                .transition(slow())
-                                .attr("stroke-dashoffset", 0);
-                        });
-                    return enterLinePath;
-                },
-                (exit) => exit.remove(), */
             .attr("d", lineGenerator)
             .call((selection) => {
+                // @typescript-eslint/ban-ts-comment
+                // @ts-expect-error the selection has nodes thus can get a total length
                 const pathLength = selection.node()?.getTotalLength() ?? 0;
                 selection
                     .attr("stroke-dashoffset", pathLength)

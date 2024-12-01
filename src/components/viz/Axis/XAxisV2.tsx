@@ -1,23 +1,19 @@
-import { AxisDomain, axisLeft, AxisScale, select } from "d3";
+import { AxisDomain, AxisScale, select } from "d3";
 import { Dimension } from "../../../types/dimensions/types";
 import { toAxisFn } from "./constants";
 import { getAxisConfig } from "./functions/getAxisConfig";
 import { useEffect, useRef } from "react";
 
 type XAxisProps<Domain extends AxisDomain> = {
-    svg: SVGSVGElement | null;
     dimension: Dimension;
     scale: AxisScale<Domain>;
     direction: keyof typeof toAxisFn;
-    tickDensity?: number;
 };
 
 export function XAxisV2<Domain extends AxisDomain>({
-    svg,
     dimension,
     scale,
     direction,
-    tickDensity = 50,
 }: XAxisProps<Domain>) {
     // The bounds (=area inside the axis) is calculated by substracting the margins
     const gRef = useRef(null);

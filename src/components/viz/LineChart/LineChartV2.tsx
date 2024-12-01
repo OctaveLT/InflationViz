@@ -1,17 +1,13 @@
 import {
     CurveFactory,
-    easeBounceIn,
-    easeBounceInOut,
-    easeLinear,
     line,
     scaleLinear,
-    select,
+    select
 } from "d3";
 import { useEffect, useMemo } from "react";
-import { getMinMax } from "../../../functions/data/getMinMax";
+import { getMinMax } from "../../../functions/data/getMinMax";s
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";
-import { fastTransition } from "../../../functions/transitions/transitions";
 
 type Point = {
     x: number | null;
