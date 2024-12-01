@@ -1,4 +1,4 @@
-import { ExtendedFeature } from "./d3";
+import { ExtendedFeature } from "d3";
 import { Country } from "../../features/Inflations/types/data";
 
 export type CountryProperties = {

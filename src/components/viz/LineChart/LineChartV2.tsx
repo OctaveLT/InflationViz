@@ -3,7 +3,7 @@ import {
     line,
     scaleLinear,
     select
-} from "./d3";
+} from "d3";
 import { useEffect, useMemo } from "react";
 import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";

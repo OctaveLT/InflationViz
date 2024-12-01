@@ -1,4 +1,4 @@
-import { Numeric, extent } from "./d3";
+import { Numeric, extent } from "d3";
 
 const DEFAULT_MIN_MAX: [Numeric, Numeric] = [0, 100]
 

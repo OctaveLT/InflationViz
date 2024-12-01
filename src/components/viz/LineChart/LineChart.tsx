@@ -1,4 +1,4 @@
-import { CurveFactory, line, scaleLinear, select, transition } from "./d3";
+import { CurveFactory, line, scaleLinear, select, transition } from "d3";
 import { useEffect, useRef } from "react";
 import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";

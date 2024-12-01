@@ -1,4 +1,4 @@
-import { brushX, select } from "./d3";
+import { brushX, select } from "d3";
 import { useEffect } from "react";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";

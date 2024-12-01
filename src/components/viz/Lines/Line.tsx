@@ -1,4 +1,4 @@
-import { line } from "./d3";
+import { line } from "d3";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";
 import { Point } from "../../../types/shapes/types";

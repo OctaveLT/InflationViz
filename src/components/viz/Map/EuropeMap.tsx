@@ -1,4 +1,4 @@
-import { BaseType, easeLinear, geoMercator, geoPath, select, transition } from "./d3";
+import { BaseType, easeLinear, geoMercator, geoPath, select, transition } from "d3";
 import { ChangeEvent, memo, MouseEvent, useEffect, useRef } from "react";
 import { Country } from "../../../features/Inflations/constants/countries";
 import { theme } from "../../../features/Inflations/constants/theme";

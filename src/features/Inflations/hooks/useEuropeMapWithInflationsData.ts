@@ -1,4 +1,4 @@
-import { ExtendedFeature } from "./d3";
+import { ExtendedFeature } from "d3";
 import { useEuropeGeojson } from "../../../api/hooks/useEuropeGeojson";
 import { useInflationsData } from "../../../api/hooks/useInflationsData";
 import {

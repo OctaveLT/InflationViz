@@ -1,4 +1,4 @@
-import { axisBottom, axisLeft, axisRight, axisTop } from "./d3";
+import { axisBottom, axisLeft, axisRight, axisTop } from "d3";
 
 /**
  * Dict from direction to axisFn of d3 (axisLeft, ...)

@@ -1,4 +1,4 @@
-import { ScaleLinear, ScaleTime } from "./d3";
+import { ScaleLinear, ScaleTime } from "d3";
 import { TooltipPosition, Tooltip } from "../../../components/viz/Tooltip/Tooltip";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";

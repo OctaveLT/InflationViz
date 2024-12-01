@@ -5,7 +5,7 @@ import {
     scaleTime,
     select,
     transition,
-} from "./d3";
+} from "d3";
 import { useEffect, useMemo, useState } from "react";
 import { createColorScale } from "../../../features/Inflations/functions/colorScale";
 import { getMinMax } from "../../../functions/data/getMinMax";

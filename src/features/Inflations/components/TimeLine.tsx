@@ -1,4 +1,4 @@
-import { scaleTime } from "./d3";
+import { scaleTime } from "d3";
 import { useRef } from "react";
 import { useInflationsData } from "../../../api/hooks/useInflationsData";
 import { XAxisV3 } from "../../../components/viz/Axis/XAxisV3";
