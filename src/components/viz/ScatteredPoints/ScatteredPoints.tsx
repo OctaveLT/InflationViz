@@ -7,7 +7,7 @@ import {
     transition,
 } from "d3";
 import { useEffect, useMemo, useState } from "react";
-import { createColorScale } from "../../../features/Inflations/functions/colorScale";
+import { inflationColorScale } from "../../../features/Inflations/functions/colorScale";
 import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";
@@ -94,7 +94,7 @@ export function ScatteredPoints<Data extends Line>({
 
         if (selection === null) return;
 
-        const dotColorScale = createColorScale(yDomain);
+        const dotColorScale = inflationColorScale();
 
         function getFill(point: Point) {
             const value = yAccessor(point);

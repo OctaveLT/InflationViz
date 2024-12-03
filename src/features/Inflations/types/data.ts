@@ -14,3 +14,8 @@ export type InflationsData = {
         data: (number | null)[][];
     };
 };
+
+export type LastRatesAndDate = {
+    date: DateShort;
+    rates: Record<Country, number>;
+};

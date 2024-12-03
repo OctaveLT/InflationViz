@@ -2,7 +2,6 @@ import { scaleLinear } from "d3";
 import { inflationThreshold } from "../constants/domains";
 
 // colors chosen from colorbrewer2.org and schubert-da.github.io/dataviz-palette-tool/
-
 export const thresholdColor = "#F5EEDC";
 
 const colorsRedToBlue3v2 = ["#67a9cf", thresholdColor, "#ef8a62"];
@@ -15,15 +14,9 @@ function getSamples(domain: [number, number], numberOfSamples: number) {
     });
 }
 
-/**
- * min => green
- * 2 => yellowgreen
- * max => red
- */
+export function inflationColorScale() {
+    const domain: [number, number] = [1, 3];
 
-const defaultDomain: [number, number] = [1, 3];
-
-export function createColorScale(domain: [number, number] = defaultDomain) {
     const colorDomain: [number, number] = [
         -domain[1] + inflationThreshold,
         domain[1] + inflationThreshold,

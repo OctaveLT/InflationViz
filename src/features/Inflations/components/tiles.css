@@ -1,0 +1,20 @@
+.tiles {
+    display: grid;
+    grid-template-areas:
+        "map countryCard countryCard"
+        "map lineChart lineChart"
+        "map lineChart lineChart";
+    grid-gap: 10px;
+    padding: 10px;
+}
+
+@media screen and (max-width: 1100px) {
+    .tiles {
+        grid-template-areas:
+            "map"
+            "countryCard"
+            "lineChart";
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+    }
+}

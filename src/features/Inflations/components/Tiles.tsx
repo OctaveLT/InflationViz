@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useInflationsData } from "../../../api/hooks/useInflationsData";
-import { DateShort } from "../../../types/generics/dates";
 import { Country } from "../constants/countries";
-import { inflationDomain } from "../constants/domains";
-import { createColorScale } from "../functions/colorScale";
+import { inflationColorScale } from "../functions/colorScale";
 import { getCountryData } from "../functions/getCountryData";
-import { InflationsData } from "../types/data";
-import { CountryCard } from "./CountryCard";
-import { EUMap } from "./EUMap";
-import { InflationsLineChart } from "./InflationsLineChart";
+import { InflationsData, LastRatesAndDate } from "../types/data";
+import { CountryTile } from "./CountryTile";
+import { InflationChartTile } from "./InflationChartTile";
+import { MapTile } from "./MapTile";
+import "./tiles.css";
 
 function getLastInflationRates(
     data: InflationsData,
@@ -23,16 +22,11 @@ function getLastInflationRates(
     countries.forEach((country, index) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        result[country] = data.data.data[index][lastIndex - 1];
+        result[country] = data.data.data[index][lastIndex];
     });
 
     return result;
 }
-
-type ShownInflationRates = {
-    date: DateShort;
-    rates: Record<Country, number>;
-};
 
 type TilesProps = {
     countryKey: Country;
@@ -41,21 +35,27 @@ type TilesProps = {
 
 export function Tiles({ countryKey, onCountryChange }: TilesProps) {
     const { data: inflationsData } = useInflationsData();
-    const [tempIndexes, setTempIndexes] = useState<[number, number] | undefined>();
-    const [tempShownInflationRates, setTempShownInflationRates] = useState<
-        ShownInflationRates | undefined
+    const [periodIndexesState, setPeriodIndexesState] = useState<
+        [number, number] | undefined
+    >();
+    const [lastRatesAndDateState, setLastRatesAndDateState] = useState<
+        LastRatesAndDate | undefined
     >();
 
     if (inflationsData === undefined) return null;
 
-    const indexes = tempIndexes ?? [0, inflationsData.data.keys[1].length - 1];
-    const tempStringDates = inflationsData.data.keys[1].slice(
-        indexes[0],
-        indexes[1],
+    const periodIndexes = periodIndexesState ?? [
+        0,
+        inflationsData.data.keys[1].length - 1,
+    ];
+    const stringDatesSelection = inflationsData.data.keys[1].slice(
+        periodIndexes[0],
+        periodIndexes[1] + 1,
     );
-    const shownInflationRates = tempShownInflationRates ?? {
-        date: tempStringDates.slice(-1)[0],
-        rates: getLastInflationRates(inflationsData, indexes[1]),
+
+    const lastRatesAndDate = lastRatesAndDateState ?? {
+        date: stringDatesSelection.slice(-1)[0],
+        rates: getLastInflationRates(inflationsData, periodIndexes[1]),
     };
 
     function handleDateRangeChange([start, end]: [Date, Date]) {
@@ -74,9 +74,12 @@ export function Tiles({ countryKey, onCountryChange }: TilesProps) {
             return time >= end.getTime();
         });
 
-        setTempIndexes([startIndex, endIndex]);
-        setTempShownInflationRates({
-            date: dates[endIndex],
+        setPeriodIndexesState([startIndex, endIndex]);
+
+        const lastDate = dates[endIndex];
+
+        setLastRatesAndDateState({
+            date: lastDate,
             rates: getLastInflationRates(inflationsData, endIndex),
         });
     }
@@ -90,64 +93,44 @@ export function Tiles({ countryKey, onCountryChange }: TilesProps) {
             (d) => new Date(d).getTime() === date.getTime(),
         );
 
-        setTempShownInflationRates({
+        setLastRatesAndDateState({
             date: dates[index],
             rates: getLastInflationRates(inflationsData, index),
         });
     }
 
     const lineData = getCountryData(inflationsData.data.data, countryKey);
-    const tempInflationRates = lineData.slice(indexes[0], indexes[1] + 1);
+    const inflationRatesSelection = lineData.slice(
+        periodIndexes[0],
+        periodIndexes[1] + 1,
+    );
 
-    const lastInflationRates = shownInflationRates.rates;
-    const lastDate = shownInflationRates.date;
+    const lastInflationRates = lastRatesAndDate.rates;
+    const lastDate = lastRatesAndDate.date;
 
     return (
-        <div
-            style={{
-                display: "grid",
-                gridTemplateAreas: `
-                        "map countryCard countryCard"
-                        "map lineChart lineChart"
-                        "map lineChart lineChart"
-                        `,
-                gridTemplateColumns: "auto 1fr",
-                gridTemplateRows: "auto 1fr",
-                gap: 10,
-                padding: 10,
-            }}
-        >
-            <EUMap
+        <div className="tiles">
+            <MapTile
                 gridArea="map"
                 lastDate={lastDate}
                 highlightedCountry={countryKey}
                 onCountryChange={onCountryChange}
                 chloroplethConfig={{
                     data: lastInflationRates,
-                    colorScale: createColorScale(inflationDomain),
+                    colorScale: inflationColorScale(),
                 }}
             />
-            <CountryCard
+            <CountryTile
                 gridArea="countryCard"
                 countryKey={countryKey}
-                lastInflationRate={lastInflationRates[countryKey]}
-                lastDate={lastDate}
+                lastRatesAndDate={lastRatesAndDate}
+                inflationRatesSelection={inflationRatesSelection}
             />
-            <InflationsLineChart
+            <InflationChartTile
                 gridArea="lineChart"
-                dimension={{
-                    height: 250,
-                    width: 600,
-                    margin: {
-                        bottom: 30,
-                        left: 30,
-                        right: 10,
-                        top: 10,
-                    },
-                }}
                 data={{
-                    stringDates: tempStringDates,
-                    inflations: tempInflationRates,
+                    stringDates: stringDatesSelection,
+                    inflations: inflationRatesSelection,
                 }}
                 countryKey={countryKey}
                 onDateRangeChange={handleDateRangeChange}

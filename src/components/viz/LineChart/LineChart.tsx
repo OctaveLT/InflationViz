@@ -1,12 +1,12 @@
-import { CurveFactory, line, scaleLinear, select, transition } from "d3";
-import { useEffect, useRef } from "react";
+import { CurveFactory, line, scaleLinear, select } from "d3";
+import { useEffect, useMemo } from "react";
 import { getMinMax } from "../../../functions/data/getMinMax";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
 import { Dimension } from "../../../types/dimensions/types";
 
 type Point = {
-    x: number;
-    y: number;
+    x: number | null;
+    y: number | null;
 };
 
 type Line = {
@@ -14,8 +14,19 @@ type Line = {
 };
 
 type LineChartProps<Data extends Line> = {
+    svg: SVGSVGElement | null;
     dimension: Dimension;
     data: Data;
+    axis?: {
+        y?: {
+            min?: number;
+            max?: number;
+        };
+        x?: {
+            min?: number;
+            max?: number;
+        };
+    };
     lineStyling?: {
         stroke?: string;
         strokeWidth?: number;
@@ -24,87 +35,82 @@ type LineChartProps<Data extends Line> = {
     curve?: CurveFactory;
 };
 
-export const LineChart = <Data extends Line>({
+export function LineChart<Data extends Line>({
+    svg,
     dimension,
     data,
+    axis,
     lineStyling,
-    style,
     curve,
-}: LineChartProps<Data>) => {
-    const svgRef = useRef<SVGSVGElement | null>(null);
-    const { width, height } = dimension;
+}: LineChartProps<Data>) {
     const { innerWidth, innerHeight, margin } = getInnerDimension(dimension);
 
-    const xAccessor = (d: Point) => d.x;
-    const yAccessor = (d: Point) => d.y;
+    const xDefaultDomain = getMinMax(data.points, (d: Point) => d.x);
 
-    const xDomain = getMinMax(data.points, xAccessor);
+    const xDomain = [
+        axis?.x?.min ?? xDefaultDomain[0],
+        axis?.x?.max ?? xDefaultDomain[1],
+    ];
 
     const xScale = scaleLinear().domain(xDomain).range([0, innerWidth]);
 
-    const yDomain = getMinMax(data.points, yAccessor);
+    const yDefaultDomain = getMinMax(data.points, (d: Point) => d.y);
 
-    const yScale = scaleLinear().domain(yDomain).range([innerHeight, 0]);
+    const yDomain: [number, number] = useMemo(
+        () => [axis?.y?.min ?? yDefaultDomain[0], axis?.y?.max ?? yDefaultDomain[1]],
+        [axis?.y?.min, axis?.y?.max, yDefaultDomain],
+    );
 
-    const lineGenerator = line<Point>()
-        .x((d) => xScale(xAccessor(d)))
-        .y((d) => yScale(yAccessor(d)));
+    const yScale = useMemo(
+        () => scaleLinear().domain(yDomain).range([innerHeight, 0]),
+        [innerHeight, yDomain],
+    );
 
-    const slow = () => transition().duration(2000);
+    const lineGenerator = useMemo(
+        () =>
+            line<Point>()
+                .x((d) => xScale(d.x ?? 0))
+                .y((d) => yScale(d.y ?? 0))
+                .defined((d) => d.x !== null && d.y !== null),
+        [xScale, yScale],
+    );
 
     useEffect(() => {
-        const svg = select(svgRef.current);
+        if (svg === null) return;
 
-        if (svg == null) return;
+        const selection = select(svg);
+
+        if (selection === null) return;
 
         if (curve) {
             lineGenerator.curve(curve);
         }
 
-        const linePath = svg.selectAll("g").selectAll("path");
+        const linePath = selection.select("g.lineChart").selectAll("path");
 
         linePath
             .data([data.points])
             .join("path")
+            .transition()
+            /*  .duration(500)
+            .ease(easeLinear) */
             .attr("d", lineGenerator)
-            .call((selection) => {
-                // @typescript-eslint/ban-ts-comment
-                // @ts-expect-error the selection has nodes thus can get a total length
-                const pathLength = selection.node()?.getTotalLength() ?? 0;
-                selection
-                    .attr("stroke-dashoffset", pathLength)
-                    .attr("stroke-dasharray", pathLength);
-
-                selection.transition(slow()).attr("stroke-dashoffset", 0);
-            })
             .attr("fill", "none")
             .attr("stroke", lineStyling?.stroke ?? "black")
             .attr("stroke-width", lineStyling?.strokeWidth ?? 1);
-    }, [data, curve, lineStyling?.stroke, lineStyling?.strokeWidth, lineGenerator]);
+    }, [
+        curve,
+        data.points,
+        lineGenerator,
+        lineStyling?.stroke,
+        lineStyling?.strokeWidth,
+        svg,
+    ]);
 
     return (
-        <svg
-            ref={svgRef}
-            width={width}
-            height={height}
-            style={{
-                background: "white",
-                ...style,
-            }}
-        >
-            <g transform={`translate(${margin.left},${margin.top})`} />
-            {/*  <XAxis
-                direction="left"
-                svg={svgRef.current}
-                scale={yScale}
-                dimension={dimension}
-            />
-            <XAxis
-                direction="bottom"
-                svg={svgRef.current}
-                scale={xScale}
-                dimension={dimension}
-            /> */}
-        </svg>
+        <g
+            className="lineChart"
+            transform={`translate(${margin.left},${margin.top})`}
+        />
     );
-};
+}

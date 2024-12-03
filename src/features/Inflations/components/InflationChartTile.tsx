@@ -1,11 +1,12 @@
 import { scaleLinear, scaleTime } from "d3";
 import { useRef, useState } from "react";
-import { XAxisV2 } from "../../../components/viz/Axis/XAxisV2";
+import { ScatteredPoints } from "../../../components";
+import { XAxis } from "../../../components/viz/Axis/XAxis";
 import { Grid } from "../../../components/viz/Lines/Grid";
 import { Line } from "../../../components/viz/Lines/Line";
-import { ScatteredPoints } from "../../../components/viz/ScatteredPoints/ScatteredPoints";
 import { TooltipPosition } from "../../../components/viz/Tooltip/Tooltip";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { Dimension } from "../../../types/dimensions/types";
 import { Country } from "../constants/countries";
 import { inflationDomain } from "../constants/domains";
@@ -15,8 +16,7 @@ import { InflationsData } from "../types/data";
 import { InflationTooltip } from "./InflationTooltip";
 import { TimeLine } from "./TimeLine";
 
-type InflationsLineChartProps = {
-    dimension: Dimension;
+type InflationChartTileProps = {
     data: {
         stringDates: InflationsData["data"]["keys"][1];
         inflations: InflationsData["data"]["data"][number];
@@ -27,15 +27,65 @@ type InflationsLineChartProps = {
     onDatePick: (date: Date) => void;
 };
 
-export function InflationsLineChart({
-    dimension,
+const margin: Dimension["margin"] = {
+    bottom: 30,
+    left: 30,
+    right: 10,
+    top: 10,
+};
+
+function useDimensions() {
+    const breakpoint = useBreakpoint();
+
+    if (breakpoint === "xs") {
+        return {
+            height: 250,
+            width: 400,
+            margin,
+        };
+    }
+
+    if (breakpoint === "sm") {
+        return {
+            height: 250,
+            width: 600,
+            margin,
+        };
+    }
+
+    if (breakpoint === "md") {
+        return {
+            height: 250,
+            width: 600,
+            margin,
+        };
+    }
+
+    if (breakpoint === "lg") {
+        return {
+            height: 250,
+            width: 600,
+            margin,
+        };
+    }
+
+    return {
+        height: 350,
+        width: 1000,
+        margin,
+    };
+}
+
+export function InflationChartTile({
     data,
     gridArea,
     countryKey,
     onDateRangeChange,
     onDatePick,
-}: InflationsLineChartProps) {
+}: InflationChartTileProps) {
     const svgRef = useRef<SVGSVGElement | null>(null);
+    const dimension = useDimensions();
+
     const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition | null>(
         null,
     );
@@ -129,7 +179,7 @@ export function InflationsLineChart({
                         onDatePick(dates[index]);
                     }}
                 />
-                <XAxisV2
+                <XAxis
                     direction="bottom"
                     scale={xScale}
                     dimension={{
@@ -137,11 +187,11 @@ export function InflationsLineChart({
                         width,
                         margin: {
                             ...margin,
-                            bottom: 0,
+                            bottom: 10,
                         },
                     }}
                 />
-                <XAxisV2
+                <XAxis
                     direction="left"
                     scale={yScale}
                     dimension={{

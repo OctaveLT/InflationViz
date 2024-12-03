@@ -1,10 +1,11 @@
 import { scaleTime } from "d3";
-import { useRef } from "react";
+import { memo, useMemo, useRef } from "react";
 import { useInflationsData } from "../../../api/hooks/useInflationsData";
-import { XAxisV3 } from "../../../components/viz/Axis/XAxisV3";
-import { BrushEvent, useBrush } from "../../../components/viz/Brush/brush";
-import { LineChartV2 } from "../../../components/viz/LineChart/LineChartV2";
+import { XAxis } from "../../../components/viz/Axis/XAxis";
+import { Brush, BrushEvent } from "../../../components/viz/Brush/Brush";
+import { LineChart } from "../../../components/viz/LineChart/LineChart";
 import { getInnerDimension } from "../../../functions/dimensions/getInnerDimension";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { Dimension } from "../../../types/dimensions/types";
 import { Country } from "../constants/countries";
 import { theme } from "../constants/theme";
@@ -15,38 +16,93 @@ const xMargin = {
     left: 30,
 };
 
-const dimension: Dimension = {
-    width: 600,
-    height: 80,
-    margin: {
-        ...xMargin,
-    },
-};
-
-const brushDimension: Dimension = {
-    ...dimension,
-    margin: { ...xMargin, top: 0, bottom: 0 },
-};
-
 type TimeLineProps = {
     countryKey: Country;
     onBrush: (range: [Date, Date]) => void;
 };
 
-export function TimeLine({ countryKey, onBrush }: TimeLineProps) {
-    const { data: inflationsData } = useInflationsData();
-    const svgRef = useRef<SVGSVGElement>(null);
+const margin: Dimension["margin"] = xMargin;
 
+function getDimensions(breakpoint: string) {
+    if (breakpoint === "xs") {
+        return {
+            height: 80,
+            width: 400,
+            margin,
+        };
+    }
+
+    if (breakpoint === "sm") {
+        return {
+            height: 80,
+            width: 600,
+            margin,
+        };
+    }
+
+    if (breakpoint === "md") {
+        return {
+            height: 80,
+            width: 600,
+            margin,
+        };
+    }
+
+    if (breakpoint === "lg") {
+        return {
+            height: 80,
+            width: 600,
+            margin,
+        };
+    }
+
+    return {
+        height: 160,
+        width: 1000,
+        margin,
+    };
+}
+
+function useDimensions() {
+    const breakpoint = useBreakpoint();
+
+    const dimensions = useMemo(() => getDimensions(breakpoint), [breakpoint]);
+
+    return dimensions;
+}
+
+export function TimeLine({ countryKey, onBrush }: TimeLineProps) {
+    const svgRef = useRef<SVGSVGElement>(null);
+    const { data: inflationsData } = useInflationsData();
+
+    const dimension = useDimensions();
     const { innerWidth } = getInnerDimension(dimension);
 
-    const stringDates = inflationsData?.data.keys[1] ?? [];
+    const brushDimension: Dimension = useMemo(
+        () => ({
+            ...dimension,
+            margin: { ...xMargin, top: 0, bottom: 0 },
+        }),
+        [dimension],
+    );
 
-    const dateDomain: [Date, Date] = [
-        new Date(stringDates[0]),
-        new Date(stringDates[stringDates.length - 1]),
-    ];
+    const stringDates = useMemo(
+        () => inflationsData?.data.keys[1] ?? [],
+        [inflationsData],
+    );
 
-    const xScale = scaleTime(dateDomain, [0, innerWidth]);
+    const dateDomain: [Date, Date] = useMemo(
+        () => [
+            new Date(stringDates[0]),
+            new Date(stringDates[stringDates.length - 1]),
+        ],
+        [stringDates],
+    );
+
+    const xScale = useMemo(
+        () => scaleTime(dateDomain, [0, innerWidth]),
+        [dateDomain, innerWidth],
+    );
 
     function handleBrush(event: BrushEvent) {
         const { selection } = event;
@@ -56,7 +112,17 @@ export function TimeLine({ countryKey, onBrush }: TimeLineProps) {
         onBrush([start, end]);
     }
 
-    useBrush(svgRef?.current, brushDimension, handleBrush);
+    const axisDimension = useMemo(
+        () => ({
+            ...dimension,
+            margin: {
+                ...xMargin,
+                top: 0,
+                bottom: 20,
+            },
+        }),
+        [dimension],
+    );
 
     if (!inflationsData) return null;
 
@@ -82,7 +148,7 @@ export function TimeLine({ countryKey, onBrush }: TimeLineProps) {
                 padding: 10,
             }}
         >
-            <LineChartV2
+            <LineChart
                 svg={svgRef.current}
                 dimension={{
                     ...dimension,
@@ -97,19 +163,10 @@ export function TimeLine({ countryKey, onBrush }: TimeLineProps) {
                     stroke: theme.typography.primary,
                 }}
             />
-            <XAxisV3
-                svg={svgRef.current}
-                direction="bottom"
-                scale={xScale}
-                dimension={{
-                    ...dimension,
-                    margin: {
-                        ...xMargin,
-                        top: 60,
-                        bottom: 0,
-                    },
-                }}
-            />
+            <XAxis direction="bottom" scale={xScale} dimension={axisDimension} />
+            <Brush dimension={brushDimension} onBrush={handleBrush} />
         </svg>
     );
 }
+
+export const TimeLineMemo = memo(TimeLine);

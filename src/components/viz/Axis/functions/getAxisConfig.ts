@@ -18,7 +18,7 @@ export function getAxisConfig(
 
     if (direction === "bottom")
         return {
-            transform: `translate(${left},${innerHeight - 10})`,
+            transform: `translate(${left},${innerHeight})`,
             axisFn: toAxisFn[direction],
         };
 

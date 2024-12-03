@@ -11,6 +11,7 @@ export function Layout({ children }: LayoutProps) {
                 height: "100vh",
                 width: "100vw",
                 backgroundColor: theme.background.main,
+                background: theme.background.main,
                 color: theme.typography.primary,
             }}
         >
