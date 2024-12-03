@@ -5,6 +5,11 @@ import { LinkedInIcon } from "../../../components/ui/Icons/LinkedInIcon";
 import { GitHubIcon } from "../../../components/ui/Icons/GitHubIcon";
 import { Button } from "../../../components/ui/Button/Button";
 
+// @ts-ignore
+const BASE_URL = import.meta.env.BASE_URL;
+
+const imgSrc = BASE_URL + "icon.svg";
+
 export function InfoButton() {
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -14,7 +19,7 @@ export function InfoButton() {
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
                 <h1>
                     {INFORMATION_DIALOG.title}
-                    <img src="/icon.svg" width="30px" style={{ marginLeft: 20 }} />
+                    <img src={imgSrc} width="30px" style={{ marginLeft: 20 }} />
                 </h1>
                 <div
                     style={{
